@@ -1,0 +1,20 @@
+sudo: required
+services: -docker
+
+before_install:
+  - docker build -t manchristiano/reactsetup -f Dockerfile.dev .
+
+script:
+  - docker run manchristiano/reactsetup npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "reactdocker"
+  env: "docker-env"
+  bucket_name: "elasticbeanstalk-us-west-2-474929748692"
+  bucket_path: "reactdocker" #same as app name
+  on:
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+      secure: "$AWS_SECRET_KEY"
